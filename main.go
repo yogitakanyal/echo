@@ -1,10 +1,12 @@
 package main
 
 import (
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -23,6 +25,10 @@ func main() {
 		proxy.ServeHTTP(c.Response(), c.Request())
 		return nil
 	})
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
+	}))
 
 	e.Logger.Fatal(e.Start(":8080"))
 
